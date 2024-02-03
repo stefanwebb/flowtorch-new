@@ -1,0 +1,19 @@
+[project]
+name = "flowtorch"
+version = "0.0.0"
+description = "A library for normalizing flows and diffusion models."
+authors = [
+    {name = "Stefan Webb", email = "info@stefanwebb.me"},
+]
+dependencies = []
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
