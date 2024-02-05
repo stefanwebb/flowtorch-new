@@ -120,7 +120,7 @@ class Bijector(torch.nn.Module):
         #     return y.get_parent_from_bijector(self)
 
         params = self._params_fn(x, context) if self._params_fn is not None else None
-        x, log_detJ = self._inverse(y, params)
+        x, log_detJ = self.inverse(y, params)
 
         # TODO: Re-enable bijective tensors
         # if (
@@ -176,7 +176,7 @@ class Bijector(torch.nn.Module):
             params = (
                 self._params_fn(x, context) if self._params_fn is not None else None
             )
-            return self._log_abs_det_jacobian(x, y, params)
+            return self.log_abs_det_jacobian(x, y, params)
         return ladj
 
     def log_abs_det_jacobian(
