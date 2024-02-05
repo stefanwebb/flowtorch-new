@@ -3,10 +3,10 @@ from typing import Any, Optional
 
 import torch
 import torch.distributions
-from src.bijectors.base import Bijector
-from src.lazy import Lazy
-from src.parameters.tensor import Tensor
-from src.parameters.base import Parameters
+from flowtorch.bijectors.base import Bijector
+from flowtorch.lazy import Lazy
+from flowtorch.parameters.tensor import Tensor
+from flowtorch.parameters.base import Parameters
 
 
 class Elementwise(Bijector):

@@ -4,10 +4,10 @@ from typing import Optional, Sequence, Tuple
 
 import torch
 import torch.nn.functional as F
-from src.bijectors.base import Bijector
-from src.lazy import Lazy
-from src.ops import clamp_preserve_gradients
-from src.parameters.base import Parameters
+from flowtorch.bijectors.base import Bijector
+from flowtorch.lazy import Lazy
+from flowtorch.ops import clamp_preserve_gradients
+from flowtorch.parameters.base import Parameters
 from torch.distributions.utils import _sum_rightmost
 
 

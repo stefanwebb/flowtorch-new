@@ -2,12 +2,11 @@
 
 from typing import Optional
 
-import src
 import torch
-from src.bijectors.elementwise import Elementwise
-from src.bijectors.ops.affine import Affine as AffineOp
-from src.lazy import Lazy
-from src.parameters.base import Parameters
+from flowtorch.bijectors.elementwise import Elementwise
+from flowtorch.bijectors.ops.affine import Affine as AffineOp
+from flowtorch.lazy import Lazy
+from flowtorch.parameters.base import Parameters
 
 
 # TODO: How is initialization handled when there is multiple inheritance?

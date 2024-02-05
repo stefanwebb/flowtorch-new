@@ -5,8 +5,8 @@ import torch
 import torch.distributions
 
 # from flowtorch.bijectors.bijective_tensor import BijectiveTensor, to_bijective_tensor
-from src.lazy import Lazy
-from src.parameters.base import Parameters
+from flowtorch.lazy import Lazy
+from flowtorch.parameters.base import Parameters
 from torch.distributions import constraints
 
 

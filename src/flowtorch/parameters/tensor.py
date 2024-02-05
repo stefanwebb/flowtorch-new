@@ -3,7 +3,7 @@ from typing import Optional, Sequence
 
 import torch
 import torch.nn as nn
-from src.parameters.base import Parameters
+from flowtorch.parameters.base import Parameters
 
 
 class Tensor(Parameters):
