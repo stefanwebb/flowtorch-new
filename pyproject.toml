@@ -5,7 +5,9 @@ description = "A library for normalizing flows and diffusion models."
 authors = [
     {name = "Stefan Webb", email = "info@stefanwebb.me"},
 ]
-dependencies = []
+dependencies = [
+    "tensordict>=0.3.0",
+]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}

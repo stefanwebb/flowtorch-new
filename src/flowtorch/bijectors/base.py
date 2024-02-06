@@ -1,4 +1,5 @@
 # Copyright (c) The FlowTorch Team
+import random
 from typing import Optional, Sequence, Tuple, Union
 
 import torch
@@ -33,6 +34,7 @@ class Bijector(torch.nn.Module):
 
         self._shape = shape
         self._context_shape = context_shape
+        self._hash = random.random()
 
         # Instantiate parameters (tensor, hypernets, etc.)
         # TODO: Should we simplify this by having a parameters.List?
@@ -43,43 +45,22 @@ class Bijector(torch.nn.Module):
                 param_shapes, self._shape, self._context_shape
             )
 
-    # TODO: Re-enable bijective tensors
-    # def _check_bijective_x(
-    #     self, x: torch.Tensor, context: Optional[torch.Tensor]
-    # ) -> bool:
-    #     return (
-    #         isinstance(x, BijectiveTensor)
-    #         and x.from_inverse()
-    #         and x.check_bijector(self)
-    #         and x.check_context(context)
-    #     )
+    def __hash__(self):
+        return hash(self._hash)
 
     def _forward(
         self,
         x: torch.Tensor,
         context: Optional[torch.Tensor] = None,
-    ) -> torch.Tensor:
+    ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         # TODO: Allow that context can have a batch shape
         assert context is None  # or context.shape == (self._context_size,)
 
-        # TODO: Re-enable bijective tensors
-        # if self._check_bijective_x(x, context):
-        #     assert isinstance(x, BijectiveTensor)
-        #     return x.get_parent_from_bijector(self)
-
         params = self._params_fn(x, context) if self._params_fn is not None else None
+        self._hash = random.random()
         y, log_detJ = self.forward(x, params)
 
-        # TODO: Re-enable bijective tensors
-        # if (
-        #     is_record_flow_graph_enabled()
-        #     and not isinstance(y, BijectiveTensor)
-        #     and not (isinstance(x, BijectiveTensor) and y in set(x.parents()))
-        # ):
-        #     # we exclude y that are bijective tensors for Compose
-        #     y = to_bijective_tensor(x, y, context, self, log_detJ, mode="forward")
-
-        return y
+        return y, log_detJ
 
     def forward(
         self,
@@ -93,44 +74,20 @@ class Bijector(torch.nn.Module):
             f"layer {self.__class__.__name__} does not have an `_forward` method"
         )
 
-    # TODO: Re-enable bijective tensors
-    # def _check_bijective_y(
-    #     self, y: torch.Tensor, context: Optional[torch.Tensor]
-    # ) -> bool:
-    #     return (
-    #         isinstance(y, BijectiveTensor)
-    #         and y.from_forward()
-    #         and y.check_bijector(self)
-    #         and y.check_context(context)
-    #     )
-
-    # TODO: Swap inverse and _inverse?
     def _inverse(
         self,
         y: torch.Tensor,
         x: Optional[torch.Tensor] = None,
         context: Optional[torch.Tensor] = None,
-    ) -> torch.Tensor:
+    ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         # TODO: Allow that context can have a batch shape
         assert context is None  # or context.shape == (self._context_size,)
 
-        # TODO: Re-enable bijective tensors
-        # if self._check_bijective_y(y, context):
-        #     assert isinstance(y, BijectiveTensor)
-        #     return y.get_parent_from_bijector(self)
-
         params = self._params_fn(x, context) if self._params_fn is not None else None
+        self._hash = random.random()
         x, log_detJ = self.inverse(y, params)
 
-        # TODO: Re-enable bijective tensors
-        # if (
-        #     is_record_flow_graph_enabled()
-        #     and not isinstance(x, BijectiveTensor)
-        #     and not (isinstance(y, BijectiveTensor) and x in set(y.parents()))
-        # ):
-        #     x = to_bijective_tensor(x, y, context, self, log_detJ, mode="inverse")
-
-        return x
+        return x, log_detJ
 
     def inverse(
         self,
@@ -144,7 +101,6 @@ class Bijector(torch.nn.Module):
             f"layer {self.__class__.__name__} does not have an `_inverse` method"
         )
 
-    # TODO: Swap log_abs_det_jacobian and _log_abs_det_jacobian?
     def _log_abs_det_jacobian(
         self,
         x: torch.Tensor,
@@ -158,24 +114,12 @@ class Bijector(torch.nn.Module):
         # TODO: Allow that context can have a batch shape
         assert context is None  # or context.shape == (self._context_size,)
         ladj = None
-        # if (
-        #     isinstance(y, BijectiveTensor)
-        #     and y.from_forward()
-        #     and y.check_bijector(self)
-        #     and y.check_context(context)
-        # ):
-        #     ladj = y.log_detJ
-        # elif (
-        #     isinstance(x, BijectiveTensor)
-        #     and x.from_inverse()
-        #     and x.check_bijector(self)
-        #     and x.check_context(context)
-        # ):
-        #     ladj = x.log_detJ
+
         if ladj is None:
             params = (
                 self._params_fn(x, context) if self._params_fn is not None else None
             )
+            self._hash = random.random()
             return self.log_abs_det_jacobian(x, y, params)
         return ladj
 
@@ -203,8 +147,7 @@ class Bijector(torch.nn.Module):
             f"layer {self.__class__.__name__} does not have an `param_shapes` method"
         )
 
-    # TODO: Shouldn't this be __str__?
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return self.__class__.__name__ + "()"
 
     def forward_shape(self, shape: torch.Size) -> torch.Size:
